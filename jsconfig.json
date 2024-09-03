@@ -1,0 +1,9 @@
+{
+    "compilerOptions": {
+        "paths": {
+            "@components/*": ["./src/components/*"],
+            "@utils/*": ["./src/utils/*"],
+            "@store/*": ["./src/store/*"]
+        }
+    }
+}
