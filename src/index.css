@@ -1,0 +1,126 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@font-face {
+  src: url("/fonts/Geist.ttf") format("opentype");
+  font-family: "Geist";
+  font-display: swap;
+}
+
+/* * {
+  font-family: Geist;
+} */
+
+html {
+  font-size: 10px;
+}
+
+h1, h2, h3, a, button, span{
+  font-family: "Bricolage Grotesque";
+}
+
+p, input, textarea {
+  font-family: "Inter";
+}
+
+.container-width {
+  max-width: 75%;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+body {
+  @apply bg-dark-50 dark:bg-dark-900;
+}
+
+main .container-width {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 2rem;
+}
+
+main .container-width div:nth-child(1) {
+  grid-column: 1/3;
+}
+
+main .container-width div:nth-child(2) {
+  grid-row: span 2;
+}
+
+img {
+  max-height: 100%;
+}
+
+main .container-width div {
+  @apply relative;
+}
+main .container-width img {
+  @apply saturate-0;
+}
+
+main .container-width div span {
+  @apply absolute bottom-0 left-0 text-dark-50 rounded-[3rem] p-[3rem] text-[3.2rem] font-semibold w-full leading-[1.115];
+  background: linear-gradient(to bottom, rgba(0,0,0, 0), #000000);
+}
+
+
+ .embla {
+  overflow: hidden !important;
+  max-width: 75%;
+  margin-left: auto;
+  margin-right: auto;
+}
+.embla-container {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: calc(20% - 20px);
+}
+/* .embla-slide {
+  flex: 0 0 26%;
+  min-width: 0;
+} */
+
+.bricolage{
+  font-family: "Bricolage Grotesque";
+}
+
+.input-text{
+  @apply p-[1rem] text-[1.8rem] outline-none rounded-md bg-dark-300 bg-opacity-30 dark:bg-dark-800 dark:bg-opacity-80 dark:text-dark-200 ease-in-out duration-300 focus:dark:border-dark-500 hover:dark:border-dark-500 focus:border-dark-300 hover:border-dark-300 border border-transparent;
+}
+.input-text-opt{
+  @apply outline-none rounded-md bg-dark-300 bg-opacity-30 dark:bg-dark-800 dark:bg-opacity-80 dark:text-dark-200 ease-in-out duration-300 focus:dark:border-dark-500 hover:dark:border-dark-500 focus:border-dark-300 hover:border-dark-300 border border-transparent;
+}
+
+*{
+  line-height: 1;
+}
+
+.sidebar-user a[aria-current="page"]{
+ @apply text-dark-900 dark:text-dark-50;
+}
+.sidebar-user a:not([aria-current="page"]){
+ @apply text-dark-400 dark:text-dark-500;
+}
+
+.descricao {
+  font-family: "Inter";
+  @apply leading-[1.3]
+}
+
+.descricao p, li{
+  @apply leading-[1.35];
+}
+
+.descricao li{
+  @apply ml-5;
+}
+
+header .products::-webkit-scrollbar{
+ @apply bg-transparent;
+ width: 8px;
+}
+header .products::-webkit-scrollbar-thumb{
+ @apply bg-dark-400 dark:bg-dark-600 rounded-[1rem];
+}
+
