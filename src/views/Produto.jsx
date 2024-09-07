@@ -34,7 +34,7 @@ const Produto = () => {
     "produtos-relacionados",
     async () => {
       return (
-        await axios.get(`${import.meta.env.VITE_API_DEVELOPMENT}/produtos`)
+        await axios.get(`${import.meta.env.VITE_API_PRODUCTION}/produtos`)
       ).data;
     }
   );
@@ -88,7 +88,7 @@ const Produto = () => {
     try {
       const response = (
         await axios.post(
-          `${import.meta.env.VITE_API_DEVELOPMENT}/conta/carrinho/adicionar`,
+          `${import.meta.env.VITE_API_PRODUCTION}/conta/carrinho/adicionar`,
           {id},
           {
             headers: {
@@ -113,7 +113,7 @@ const Produto = () => {
     try {
       const response = (
         await axios.post(
-          `${import.meta.env.VITE_API_DEVELOPMENT}/conta/favoritos/adicionar`,
+          `${import.meta.env.VITE_API_PRODUCTION}/conta/favoritos/adicionar`,
           {id},
           {
             headers: {
@@ -135,7 +135,7 @@ const Produto = () => {
         const response = (
           await axios.delete(
             `${
-              import.meta.env.VITE_API_DEVELOPMENT
+              import.meta.env.VITE_API_PRODUCTION
             }/conta/favoritos/remover/${id}`,
             { headers: { Authorization: `Bearer ${token}` } }
           )
@@ -147,28 +147,13 @@ const Produto = () => {
     }
   }
 
-  //  async function confirmOrder(e){
-  //   e.preventDefault()
-  //   const token = Cookies.get("auth_token_user")
-  //   if(token){
-  //     try{
-  //       const orders = cart
-  //       const response = await axios.post(`${import.meta.env.VITE_API_DEVELOPMENT}/conta/confirmar-pedido`, orders, {headers: {Authorization: `Bearer ${token}`}})
-  //       console.log(response.data)
-  //     }
-  //     catch(err){
-  //       console.log(err)
-  //     }
-  //   }
-  // }
-
   useEffect(() => {
     async function loadProduct() {
       setLoading(true);
       try {
         const response = (
           await axios.get(
-            `${import.meta.env.VITE_API_DEVELOPMENT}/produto/${id}/${slug}`
+            `${import.meta.env.VITE_API_PRODUCTION}/produto/${id}/${slug}`
           )
         ).data;
         setProduto(response);
@@ -190,14 +175,11 @@ const Produto = () => {
     return (
       <>
         <section>
-          <div
-            className="container-width grid gap-[4rem] mt-[4vh]"
-            style={{ gridTemplateColumns: "auto 1fr .5fr" }}
-          >
+          <div className="container-width grid lg:grid-cols-[auto_.7fr_.7fr] 2xl:grid-cols-[auto_1fr_.5fr] gap-[2rem] lg:gap-[4rem] mt-[4vh]">
             {/* <div className="flex flex-col gap-[1rem]"> */}
 
             <div
-              className="images flex flex-col gap-[1rem]"
+              className="images max-lg:row-start-2 flex lg:flex-col gap-[1rem] overflow-x-auto"
               data-animate="produto-inicio"
             >
               {produto?.images.map((i) => (
@@ -205,7 +187,7 @@ const Produto = () => {
                   onClick={() => setImgActive(i)}
                   key={i}
                   src={i}
-                  className={`max-w-[180px] min-h-[160px] max-h-[160px] rounded-[1rem] object-cover ${
+                  className={`w-[100px] h-[100px] 2xl:w-[180px] 2xl:h-[180px] rounded-[1rem] object-cover ${
                     imgActive === i ? "" : "brightness-[.40]"
                   }`}
                 />
@@ -215,21 +197,16 @@ const Produto = () => {
               <img
                 src={imgActive}
                 alt=""
-                className="max-h-[70vh] min-h-[70vh]  object-cover object-top rounded-[1rem]"
+                className="h-[40vh] lg:h-[50vh] 2xl:h-[70vh]  object-cover object-top rounded-[1rem]"
               />
             </div>
             {/* </div> */}
             <div className="mr-auto" data-animate="produto-inicio">
-              <h1 className="text-[4rem] text-dark-900 font-semibold leading-[1.115] mb-[.4rem] dark:text-dark-100">
+              <h1 className="text-[3rem] 2xl:text-[4rem] text-dark-900 font-semibold leading-[1.115] mb-[.4rem] dark:text-dark-100">
                 {produto?.title}
               </h1>
               <div className="flex items-center gap-[2rem] mb-[1.2rem]">
                 <div className="flex">
-                  {/* <Star className="stroke-dark-100 fill-dark-100" />
-                  <Star className="stroke-dark-100 fill-dark-100" />
-                  <Star className="stroke-dark-100 fill-dark-100" />
-                  <Star className="stroke-dark-700 fill-dark-700" />
-                  <Star className="stroke-dark-700 fill-dark-700" /> */}
                   {criarElementoEstrelas(
                     calcularMediaAvaliacoes(produto?.comments)
                   )}
@@ -259,7 +236,7 @@ const Produto = () => {
                     addProductCart();
                     e.preventDefault();
                   }}
-                  className="bg-dark-900 text-dark-100 dark:text-dark-900 dark:bg-dark-100 w-full justify-center flex items-center gap-[1rem] p-[1.4rem] text-[2rem] rounded-md font-semibold hover:invert duration-300 ease-in-out"
+                  className="bg-dark-900 text-dark-100 dark:text-dark-900 dark:bg-dark-100 w-full justify-center flex items-center gap-[1rem] text-[1.8rem] p-[1rem] 2xl:p-[1.4rem] 2xl:text-[2rem] rounded-md font-semibold hover:invert duration-300 ease-in-out"
                 >
                   {message === null && (
                     <>
@@ -312,21 +289,21 @@ const Produto = () => {
               className="col-span-full mb-[6vh]"
               data-animate="produto-descricao"
             >
-              <h1 className="text-[4rem] font-semibold dark:text-dark-100 mt-[4rem] mb-[1.2rem] flex gap-[1rem] items-center">
+              <h1 className="text-[2rem] lg:text-[4rem] font-semibold dark:text-dark-100 mt-[4rem] mb-[1.2rem] flex gap-[1rem] items-center">
                 <FileText />
                 Descrição do produto
               </h1>
               <div
-                className="dark:text-dark-300 text-[1.8rem] descricao"
+                className="dark:text-dark-300 text-[1.4rem] lg:text-[1.8rem] descricao"
                 dangerouslySetInnerHTML={{ __html: produto.description }}
               ></div>
             </div>
             <div className="col-span-full mb-[6vh]">
-              <h1 className="text-[4rem] font-semibold dark:text-dark-100 mt-[4rem] mb-[1.2rem] flex gap-[1rem] items-center">
+              <h1 className="text-[2rem] lg:text-[4rem] font-semibold dark:text-dark-100 mt-[4rem] mb-[1.2rem] flex gap-[1rem] items-center">
                 <MessageCircle />
                 Avaliações do produto
               </h1>
-              <div className="grid grid-cols-[repeat(auto-fill,minmax(0,33%))] gap-[2rem] comentarios">
+              <div className="grid lg:grid-cols-[repeat(auto-fill,minmax(0,50%))] 2xl:grid-cols-[repeat(auto-fill,minmax(0,33%))] gap-[2rem] comentarios">
                 {produto.comments.map((c, index) => (
                   <div
                     key={index}
@@ -341,7 +318,10 @@ const Produto = () => {
                       calcularMediaAvaliacoes(produto?.comments)
                     )}
                     <p className="text-dark-300 mt-[.8rem] text-[1.6rem]">
-                      Avaliado em {dayjs(c.createdAt).tz("America/Sao_Paulo").format("DD/MM/YYYY")}
+                      Avaliado em{" "}
+                      {dayjs(c.createdAt)
+                        .tz("America/Sao_Paulo")
+                        .format("DD/MM/YYYY")}
                     </p>
                     <h2 className="mt-[1.2rem] font-semibold dark:text-dark-100 text-[2.4rem] leading-[1.15]">
                       {c.title}
@@ -355,14 +335,14 @@ const Produto = () => {
             </div>
           </div>
           <div className="col-span-full mb-[6vh]">
-            <h1 className="container-width text-[4rem] font-semibold dark:text-dark-100 mt-[4rem] mb-[1.2rem] flex gap-[1rem] items-center">
+            <h1 className="container-width text-[2rem] lg:text-[4rem] font-semibold dark:text-dark-100 mt-[4rem] mb-[1.2rem] flex gap-[1rem] items-center">
               <Tags />
               Produtos relacionados
             </h1>
             {!isFetching && (
               <SlideSection
                 products={products.filter(
-                  (p) => p.category === produto.category
+                  (p) => p.category === produto.category && p._id !== produto?._id
                 )}
               />
             )}
