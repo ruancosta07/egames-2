@@ -11,29 +11,20 @@ import { CheckCircle } from "lucide-react";
 import { CircleX } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
-const ProductCard = ({
-  title,
-  image,
-  price,
-  discount,
-  id,
-  slug,
-  ...props
-}) => {
+const ProductCard = ({ title, image, price, discount, id, slug, ...props }) => {
   const { setCart, setFavorites, favorites, signed } = useUserStore();
   const [favProduct, setFavProduct] = useState(() => {
     return favorites.length > 0 && favorites.some((f) => f._id === id);
   });
   const [message, setMessage] = useState(null);
   const timeOut = useRef();
-  const navigateTo = useNavigate()
+  const navigateTo = useNavigate();
   async function addProductCart() {
     try {
-
       const response = (
         await axios.post(
-          `${import.meta.env.VITE_API_DEVELOPMENT}/conta/carrinho/adicionar`,
-          {id},
+          `${import.meta.env.VITE_API_PRODUCTION}/conta/carrinho/adicionar`,
+          { id },
           {
             headers: {
               Authorization: `Bearer ${Cookies.get("auth_token_user")}`,
@@ -57,8 +48,8 @@ const ProductCard = ({
     try {
       const response = (
         await axios.post(
-          `${import.meta.env.VITE_API_DEVELOPMENT}/conta/favoritos/adicionar`,
-          {id},
+          `${import.meta.env.VITE_API_PRODUCTION}/conta/favoritos/adicionar`,
+          { id },
           {
             headers: {
               Authorization: `Bearer ${Cookies.get("auth_token_user")}`,
@@ -79,7 +70,7 @@ const ProductCard = ({
         const response = (
           await axios.delete(
             `${
-              import.meta.env.VITE_API_DEVELOPMENT
+              import.meta.env.VITE_API_PRODUCTION
             }/conta/favoritos/remover/${id}`,
             { headers: { Authorization: `Bearer ${token}` } }
           )
@@ -96,21 +87,32 @@ const ProductCard = ({
       <Link
         to={`/produto/${id}/${slug}`}
         {...props}
-        className="min-h-[300px] flex flex-col relative pt-[1rem]"
+        className="lg:min-h-[200px] 2xl:min-h-[300px] flex flex-col relative pt-[1rem]"
       >
-        <button onClick={(e) => {
-              if(!signed){
-                navigateTo("/login")
-              }
-              e.preventDefault()
-              setFavProduct(!favProduct);
-              favProduct ? removeProductFavorites() : addProductFavorites();
-            }} className="absolute p-[1.2rem] rounded-full bg-dark-200 dark:bg-dark-800 -right-4 -top-0 z-[4]">
-          {favProduct ? <Heart className="text-rose-500 fill-rose-500" width={28} height={28}/> : <Heart className="text-rose-500" width={28} height={28}/>}
+        <button
+          onClick={(e) => {
+            e.preventDefault();
+            if (!signed) {
+              return navigateTo("/login");
+            }
+            setFavProduct(!favProduct);
+            favProduct ? removeProductFavorites() : addProductFavorites();
+          }}
+          className="absolute p-[1.2rem] rounded-full bg-dark-200 dark:bg-dark-800 -right-4 -top-0 z-[4]"
+        >
+          {favProduct ? (
+            <Heart
+              className="text-rose-500 fill-rose-500"
+              width={28}
+              height={28}
+            />
+          ) : (
+            <Heart className="text-rose-500" width={28} height={28} />
+          )}
         </button>
         <img
           src={image}
-          className="w-full rounded-[1rem] max-h-[240px] min-h-[240px] object-cover mb-[1.2rem]"
+          className="w-full rounded-[1rem] lg:h-[200px] 2xl:h-[240px] object-cover mb-[1.2rem]"
           alt=""
         />
         <h1 className="text-[2.4rem] font-semibold text-dark-900 dark:text-dark-100 leading-[1.115] mb-[.8rem]">
@@ -124,30 +126,30 @@ const ProductCard = ({
             R$ {discount}
           </span>
         </div>
-        <div className="flex gap-[1rem] dark:text-dark-900 text-dark-100 mt-auto ">
+        <div className="flex gap-[1rem] dark:text-dark-900 text-dark-100 2xl:mt-auto ">
           <button
             onClick={(e) => {
-              if(!signed){
-                navigateTo("/login")
+              e.preventDefault();
+              if (!signed) {
+                return navigateTo("/login");
               }
-              addProductCart()
-              e.preventDefault()
+              addProductCart();
             }}
             className="bg-dark-900 dark:bg-dark-100 w-full justify-center flex items-center gap-[1rem] p-[1rem] text-[1.6rem] rounded-md font-semibold hover:invert duration-300 ease-in-out"
           >
             {message === null && (
               <>
-                Adicionar ao carrinho <ShoppingCart height={20} width={20}/>
+                Adicionar ao carrinho <ShoppingCart height={20} width={20} />
               </>
             )}
             {message && message.type === "success" && (
               <>
-                Adicionado <CheckCircle  height={20} width={20}/>
+                Adicionado <CheckCircle height={20} width={20} />
               </>
             )}
             {message && message.type !== "success" && (
               <>
-                Já está no carrinho <CircleX  height={20} width={20}/>
+                Já está no carrinho <CircleX height={20} width={20} />
               </>
             )}
           </button>
