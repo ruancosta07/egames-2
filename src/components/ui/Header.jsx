@@ -242,7 +242,7 @@ const Header = ({ products }) => {
               </label>
               <div
                 onClick={activeSidebar}
-                className="sidebar-container w-[100vw] h-[100vh] z-[30] bg-dark-900 fixed top-0 left-0 bg-opacity-30 hidden"
+                className="sidebar-container w-[100vw] h-[100dvh] z-[30] bg-dark-900 fixed top-0 left-0 bg-opacity-30 hidden"
               >
                 <div
                   onClick={(e) => e.stopPropagation()}
