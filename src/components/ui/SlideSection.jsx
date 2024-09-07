@@ -20,7 +20,7 @@ const SlideSection = ({ titleSection, products, icon }) => {
       {titleSection && (
         <div className="flex gap-[1rem] items-center container-width mb-[1rem]" >
           {icon}
-          <h1 className="text-[6rem] text-dark-900 dark:text-dark-50 font-semibold">
+          <h1 className="text-[3rem] xl:text-[6rem] text-dark-900 dark:text-dark-50 font-semibold">
           {titleSection}
         </h1>
         </div>
