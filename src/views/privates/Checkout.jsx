@@ -8,11 +8,11 @@ import Message from "@utils/Message";
 import Cookies from "js-cookie";
 import axios from "axios";
 import { Navigate } from "react-router-dom";
-import ReactConfetti from "react-confetti";
 import { CheckCircleIcon } from "lucide-react";
 import { Link } from "react-router-dom";
 import Loader from "@components/ui/Loader";
 import { useEffect } from "react";
+import { ConfettiSideCannons } from "@components/magicui/confetti";
 const Checkout = () => {
   const [step, setStep] = useState(1);
   const { userActive, loadingData, cart, orders, setCart } = useUserStore();
@@ -154,7 +154,7 @@ const Checkout = () => {
           shipTax: Math.round(Math.random() * 20),
           status: "finished",
         }
-        const response = (await axios.post(`${import.meta.env.VITE_API_DEVELOPMENT}/conta/confirmar-pedido`, {order}, {headers: {Authorization: `Bearer ${token}`}})).data
+        const response = (await axios.post(`${import.meta.env.VITE_API_PRODUCTION}/conta/confirmar-pedido`, {order}, {headers: {Authorization: `Bearer ${token}`}})).data
         setStep(4)
         setCart(response.cart)
         setComplete(true)
@@ -200,7 +200,7 @@ const Checkout = () => {
         const adress = endereco
         setLoading(true)
         try{
-          const response = (await axios.patch(`${import.meta.env.VITE_API_DEVELOPMENT}/conta/atualizar`, {adress}, {headers: {Authorization: `Bearer ${token}`}})).data
+          const response = (await axios.patch(`${import.meta.env.VITE_API_PRODUCTION}/conta/atualizar`, {adress}, {headers: {Authorization: `Bearer ${token}`}})).data
           gsap.to(".step-1", {
             opacity: 0,
             x: "-30vw",
@@ -237,53 +237,67 @@ const Checkout = () => {
   if (loadingData === false && orders.some(o=> o.status === 'pending'))
     return (
       <section>
-        <div className="max-w-[65%] mx-auto py-[10vh] overflow-x-clip overflow-y-clip">
-          {step <= 3 && <ol className="flex items-center w-full font-medium text-center text-gray-500 dark:text-gray-400  text-[2rem] bricolage">
-            <li
-              className={`flex md:w-full items-center text-blue-600 dark:text-zinc-50 sm:after:content-[''] after:w-full after:h-1 after:border-b after:border-gray-200 after:border-1 after:hidden sm:after:inline-block after:mx-6 xl:after:mx-10 ${
-                step < 1
-                  ? "dark:after:border-zinc-700"
-                  : "dark:after:border-zinc-50"
-              }`}
-            >
-              <span className="flex items-center after:content-['/'] sm:after:hidden after:mx-2 after:text-gray-200 dark:after:text-gray-500">
-                {step == 1 ? (
-                  <span className="me-2">1</span>
-                ) : (
-                  <CheckCircle2 className="dark:stroke-zinc-50 me-2" />
-                )}
-                Informações{" "}
-                <span className="hidden sm:inline-flex sm:ms-2">pessoais</span>
-              </span>
-            </li>
-            <li
-              className={`flex md:w-full items-center after:content-[''] after:w-full after:h-1 after:border-b after:border-gray-200 after:border-1 after:hidden sm:after:inline-block after:mx-6 xl:after:mx-10 ${
-                step == 3
-                  ? "dark:after:border-zinc-50"
-                  : "dark:after:border-zinc-700"
-              } ${step == 2 ? "dark:text-dark-50" : ""}`}
-            >
-              <span className="flex items-center after:content-['/'] sm:after:hidden after:mx-2 after:text-gray-200 dark:after:text-gray-500">
-                {step > 2 ? (
-                  <CheckCircle2 className="dark:stroke-zinc-50 me-2" />
-                ) : (
-                  <span className="me-2">2</span>
-                )}
-                Pagamento
-              </span>
-            </li>
-            <li className="flex items-center">
-              <span className="me-2">3</span>
-              Confirmação
-            </li>
-          </ol>}
+        <div className="max-w-[85%] lg:max-w-[65%] mx-auto py-[10vh] overflow-x-clip overflow-y-clip">
+          {step <= 3 && (
+            <ol className="flex max-lg:flex-col lg:items-center max-lg:gap-[.4rem] w-full font-medium text-center text-gray-500 dark:text-gray-400 text-[2.4rem] lg:text-[2rem] bricolage">
+              <li
+                className={`flex md:w-full items-center text-blue-600 dark:text-zinc-50 sm:after:content-[''] after:w-full after:h-1 after:border-b after:border-gray-200 after:border-1 after:hidden sm:after:inline-block after:mx-6 xl:after:mx-10 ${
+                  step < 1
+                    ? "dark:after:border-zinc-700"
+                    : "dark:after:border-zinc-50"
+                }`}
+              >
+                <span className="flex items-center after:content-[''] sm:after:hidden after:mx-2 after:text-gray-200 dark:after:text-gray-500">
+                  {step == 1 ? (
+                    <span className="me-2 max-lg:w-[2.4rem] max-lg:h-[2.4rem]">
+                      1
+                    </span>
+                  ) : (
+                    <CheckCircle2 className="dark:stroke-zinc-50 me-2" />
+                  )}
+                  Informações{" "}
+                  <span className="hidden sm:inline-flex sm:ms-2">
+                    pessoais
+                  </span>
+                </span>
+              </li>
+              <li
+                className={`flex md:w-full items-center after:content-[''] after:w-full after:h-1 after:border-b after:border-gray-200 after:border-1 after:hidden sm:after:inline-block after:mx-6 xl:after:mx-10 ${
+                  step == 3
+                    ? "dark:after:border-zinc-50"
+                    : "dark:after:border-zinc-700"
+                } ${step == 2 ? "dark:text-dark-50" : ""}`}
+              >
+                <span
+                  className={`flex items-center after:content-[''] sm:after:hidden after:mx-2 after:text-gray-200 dark:after:text-gray-500 ${
+                    step >= 2 ? "text-dark-50" : "text-dark-300"
+                  }`}
+                >
+                  {step > 2 ? (
+                    <CheckCircle2 className="dark:stroke-zinc-50 me-2" />
+                  ) : (
+                    <span className="me-2 max-lg:w-[2.4rem] max-lg:h-[2.4rem]">
+                      2
+                    </span>
+                  )}
+                  Pagamento
+                </span>
+              </li>
+              <li className="flex items-center">
+                <span className="me-2 max-lg:w-[2.4rem] max-lg:h-[2.4rem]">
+                  3
+                </span>
+                Confirmação
+              </li>
+            </ol>
+          )}
           {step === 1 && (
             <>
               <div className=" mt-[8rem] step-1">
-                <h1 className="dark:text-dark-50 text-[4rem] font-semibold">
+                <h1 className="dark:text-dark-50 text-[3rem] leading-[1.215] lg:text-[4rem] font-semibold">
                   Endereço de entrega
                 </h1>
-                <div className="grid grid-cols-2 gap-[1.6rem] mt-[1.2rem]">
+                <div className="grid lg:grid-cols-2 gap-[1.6rem] mt-[1.2rem]">
                   <div className="flex flex-col">
                     <label
                       htmlFor="email"
@@ -415,10 +429,10 @@ const Checkout = () => {
           {step === 2 && (
             <>
               <div className="step-2 mt-[4rem]">
-                <h1 className="dark:text-dark-50 text-[4rem] font-semibold">
+                <h1 className="dark:text-dark-50 text-[3rem] leading-[1.215] lg:text-[4rem] font-semibold">
                   Informações de pagamento
                 </h1>
-                <div className="flex mt-[1.2rem] gap-[2rem] justify-start">
+                <div className="flex max-lg:flex-col mt-[1.2rem] gap-[2rem] justify-start">
                   <label
                     className={`${
                       paymentMethod === "creditCard"
@@ -559,36 +573,43 @@ const Checkout = () => {
             </>
           )}
           {step === 3 && (
-            <form onSubmit={(e)=> confirmOrder(e)} className="step-3 mt-[4rem] mb-[8rem]">
-              <h1 className="dark:text-dark-50 text-[4rem] font-semibold mb-[2rem]">
+            <form
+              onSubmit={(e) => confirmOrder(e)}
+              className="step-3 mt-[4rem] mb-[8rem]"
+            >
+              <h1 className="dark:text-dark-50 text-[3rem] lg:text-[4rem] font-semibold mb-[2rem]">
                 Confirmar pedido
               </h1>
               <div>
                 {cart.map((i, index) => (
                   <div key={index} className="flex gap-[1rem] mt-[1.2rem]">
                     <img
-                      className="max-w-[200px] max-h-[180px] min-w-[200px] min-h-[180px] object-cover rounded-[.5rem]"
+                      className="w-[100px] h-[100px] lg:max-w-[200px] lg:max-h-[180px] lg:min-w-[200px] lg:min-h-[180px] object-cover rounded-[.5rem]"
                       src={i.images[0]}
                       alt=""
                     />
                     <div className="flex flex-col">
-                      <span className="dark:text-dark-100 text-[2.6rem] font-semibold mb-[.8rem]">
+                      <span className="dark:text-dark-100 text-[2rem] leading-[1.215] lg:text-[2.6rem] font-semibold mb-[.8rem]">
                         {i.title}
                       </span>
                       <div className="flex gap-[1rem] items-center">
-                        <span className="dark:text-dark-200 text-[2.3rem] font-medium">
+                        <span className="dark:text-dark-200 text-[1.8rem] lg:text-[2.3rem] font-medium">
                           R$ {i.price}
                         </span>
                         <span className="dark:text-dark-300 text-[1.4rem] font-medium italic line-through">
                           R$ {i.oldPrice}
                         </span>
                       </div>
-                      <p className="mt-[.8rem] text-[1.6rem] dark:text-dark-300 font-medium">Quantidade: {i.quantity}</p>
+                      <p className="mt-[.8rem] text-[1.4rem] lg:text-[1.6rem] dark:text-dark-300 font-medium">
+                        Quantidade: {i.quantity}
+                      </p>
                     </div>
                   </div>
                 ))}
               </div>
-              <span className="ml-auto block text-[2rem] dark:text-dark-100 mt-[2rem] font-medium">Total do pedido: R$ {totalItens().toFixed(2)}</span>
+              <span className="ml-auto block text-[2rem] dark:text-dark-100 mt-[2rem] font-medium">
+                Total do pedido: R$ {totalItens().toFixed(2)}
+              </span>
               <div className="flex justify-between">
                 <button
                   type="button"
@@ -623,19 +644,36 @@ const Checkout = () => {
               </div>
             </form>
           )}
-          {step === 4 && <div className="pt-[8vh]">
-            <CheckCircle2 className="dark:text-dark-50 mx-auto w-[10rem] h-[10rem]"/>
-            <h1 className="dark:text-dark-50 text-[6rem] text-center font-bold mt-[2rem] mb-[.8rem]">Seu pedido foi confirmado!</h1>
-            <p className="text-center dark:text-dark-300 text-[2rem] max-w-[70ch] mx-auto leading-[1.3]">Obrigado por comprar conosco, você pode continuar comprando ou ver mais informações sobre seu pedido no seu perfil.</p>
-            <div className="flex justify-center mt-[2rem] gap-[1rem]">
-            <Link to={"/"} className="border dark:bg-dark-50 dark:text-dark-900 p-[1rem] px-[2rem] rounded-[.5rem] text-[1.8rem] font-medium">Continuar comprando</Link>
-            <Link to={"/conta/compras"} className="border dark:border-dark-700 dark:text-dark-100 p-[1rem] px-[2rem] rounded-[.5rem] text-[1.8rem] font-medium">Ver pedido</Link>
+          {step === 4 && (
+            <div className="lg:pt-[8vh]">
+              <CheckCircle2 className="dark:text-dark-50 mx-auto w-[6rem] h-[6rem] lg:w-[10rem] lg:h-[10rem]" />
+              <h1 className="dark:text-dark-50 leading-[1.215] text-[3rem] lg:text-[6rem] text-center font-bold mt-[1.2rem] lg:mt-[2rem] mb-[.8rem]">
+                Seu pedido foi confirmado!
+              </h1>
+              <p className="text-center dark:text-dark-300 text-[1.4rem] lg:text-[2rem] max-w-[70ch] mx-auto leading-[1.3]">
+                Obrigado por comprar conosco, você pode continuar comprando ou
+                ver mais informações sobre seu pedido no seu perfil.
+              </p>
+              <div className="flex justify-center mt-[2rem] gap-[1rem]">
+                <Link
+                  to={"/"}
+                  className="border w-fit dark:bg-dark-50 dark:text-dark-900 p-[1rem] px-[2rem] rounded-[.5rem] text-[1.8rem] font-medium"
+                >
+                  Início
+                </Link>
+                <Link
+                  to={"/conta/compras"}
+                  className="border dark:border-dark-700 dark:text-dark-100 p-[1rem] px-[2rem] rounded-[.5rem] text-[1.8rem] font-medium"
+                >
+                  Ver pedido
+                </Link>
+              </div>
+              {complete && <ConfettiSideCannons/>}
             </div>
-            {complete && <ReactConfetti/>}
-            </div>}
+          )}
         </div>
         {message && <Message {...message} setMessage={setMessage} />}
-        {loading && <Loader/>}
+        {loading && <Loader />}
       </section>
     );
 };
