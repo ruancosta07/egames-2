@@ -33,7 +33,7 @@ function App() {
         setLoadingData(true)
         try{
           const response = (await axios.post(
-            `${import.meta.env.VITE_API_DEVELOPMENT}/token/validar`,
+            `${import.meta.env.VITE_API_PRODUCTION}/token/validar`,
             {},
             { headers: { Authorization: `Bearer ${token}` } }
           )).data
