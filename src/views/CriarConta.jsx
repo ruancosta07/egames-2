@@ -1,15 +1,19 @@
 import Message from "@utils/Message";
+import axios from "axios";
 import { EyeOff } from "lucide-react";
 import { ArrowLeft } from "lucide-react";
 import { Eye } from "lucide-react";
 import { useRef } from "react";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 
 const CriarConta = () => {
   const [seePassword, setSeePassword] = useState(false);
   const [message, setMessage] = useState(null);
   const name = useRef();
+  const timeOut = useRef();
+  const navigateTo = useNavigate()
   const [newUser, setNewUser] = useState({
     name: "",
     email: "",
@@ -21,43 +25,58 @@ const CriarConta = () => {
     password: null,
   });
 
-function createAccount(e) {
-  e.preventDefault();
+  async function createAccount(e) {
+    e.preventDefault();
+    let updatedErrors = { ...newUserError };
+    if (newUser.name === "") {
+      updatedErrors.name = true;
+    } else {
+      updatedErrors.name = false;
+    }
 
-  // Crie uma cópia do estado de erros
-  let updatedErrors = { ...newUserError };
+    if (newUser.email === "") {
+      updatedErrors.email = true;
+    } else {
+      updatedErrors.email = false; // Corrigir erro se o campo não estiver vazio
+    }
 
-  // Verifique e defina erros conforme necessário
-  if (newUser.name === "") {
-    updatedErrors.name = true;
-  } else {
-    updatedErrors.name = false; // Corrigir erro se o campo não estiver vazio
+    if (newUser.password === "") {
+      updatedErrors.password = true;
+    } else {
+      updatedErrors.password = false; // Corrigir erro se o campo não estiver vazio
+    }
+
+    // Atualize o estado com o objeto atualizado
+    setNewUserError(updatedErrors);
+    if (Object.values(updatedErrors).every((i) => !!i === false)) {
+      try {
+        const response = await axios.post(
+          `${import.meta.env.VITE_API_PRODUCTION}/criar-conta`,
+          { ...newUser }
+        );
+        setMessage({
+          type: "success",
+          title: "Usuário criado com sucesso",
+          text: "Você será redirecionado(a) para a página de login...",
+        });
+        clearTimeout(timeOut.current)
+        timeOut.current = setTimeout(()=> {
+          navigateTo("/login")
+        }, 3000)
+      } catch (err) {
+        console.log(err)
+        setMessage({
+          type: "error",
+          title: err.response.data.message,
+        });
+      }
+    }
   }
-
-  if (newUser.email === "") {
-    updatedErrors.email = true;
-  } else {
-    updatedErrors.email = false; // Corrigir erro se o campo não estiver vazio
-  }
-
-  if (newUser.password === "") {
-    updatedErrors.password = true;
-  } else {
-    updatedErrors.password = false; // Corrigir erro se o campo não estiver vazio
-  }
-
-  // Atualize o estado com o objeto atualizado
-  setNewUserError(updatedErrors);
-}
-
 
   return (
     <>
       <section className="">
-        <div
-          className="container-width grid min-h-[100vh] items-center gap-[6rem]"
-          style={{ gridTemplateColumns: "1fr .9fr" }}
-        >
+        <div className="container-width grid min-h-[100vh] lg:grid-cols-[1fr_.9fr] items-center gap-[6rem]">
           <form className="grid" onSubmit={(e) => createAccount(e)}>
             <Link
               to={"/"}
@@ -180,7 +199,10 @@ function createAccount(e) {
                 </button>
               </div>
             </div>
-            <button className="mt-[4rem] rounded-md text-[2.4rem] font-semibold bg-dark-900 text-dark-50 w-full py-[1.4rem] dark:bg-dark-50 dark:text-dark-900">
+            <button
+              type="submit"
+              className="mt-[4rem] rounded-md text-[2.4rem] font-semibold bg-dark-900 text-dark-50 w-full py-[1.4rem] dark:bg-dark-50 dark:text-dark-900"
+            >
               Criar conta
             </button>
             <div className="flex justify-between">
@@ -201,7 +223,7 @@ function createAccount(e) {
           </form>
           <img
             src="/images/bg-2.jpg"
-            className="h-[90%] object-cover rounded-[2rem]"
+            className="h-[90%] max-lg:hidden object-cover rounded-[2rem]"
             alt=""
           />
         </div>
