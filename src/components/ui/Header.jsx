@@ -17,6 +17,10 @@ import { useLocation } from "react-router-dom";
 import { History } from "lucide-react";
 import { useMutation, useQueryClient } from "react-query";
 import { useNavigate } from "react-router-dom";
+import { Menu } from "lucide-react";
+import { X } from "lucide-react";
+import { ChartNoAxesColumnDecreasing } from "lucide-react";
+import { Home } from "lucide-react";
 const Header = ({ products }) => {
   const {
     theme,
@@ -27,21 +31,44 @@ const Header = ({ products }) => {
     setCart,
     setFavorites,
     setSigned,
-    notifications
+    notifications,
   } = useUserStore();
   const [modalUser, setModalUser] = useState(false);
+  const [menuMobile, setMenuMobile] = useState(false);
   const [searchActive, setSearchActive] = useState(false);
   const [foundProducts, setFoundProducts] = useState(null);
   const [searchValue, setSearchValue] = useState("");
   const [loading, setLoading] = useState(false);
   const searchBar = useRef();
-  const navigateTo = useNavigate()
+  const navigateTo = useNavigate();
   const pathname = useLocation().pathname;
+  const [desktop, setDesktop] = useState(null);
   const [lastProducts, setLastProducts] = useState(() => {
     const localProducts = localStorage.getItem("lastProducts");
     return localProducts ? JSON.parse(localProducts) : [];
   });
   const timeOut = useRef();
+
+  useEffect(() => {
+    function resizeScreen() {
+      if (innerWidth < 1024) {
+        setDesktop(false);
+      } else {
+        setDesktop(true);
+      }
+    }
+    window.addEventListener("resize", resizeScreen);
+    return () => window.removeEventListener("resize", resizeScreen);
+  }, []);
+
+  useEffect(() => {
+    if (innerWidth < 1024) {
+      setDesktop(false);
+    } else {
+      setDesktop(true);
+    }
+  }, []);
+
   function logoutUser() {
     Cookies.remove("auth_token_user");
     setCart([]);
@@ -51,7 +78,7 @@ const Header = ({ products }) => {
 
   function showSearchBar() {
     // if(searchActive){
-    gsap.to(".search-product", { width: "70%" });
+    gsap.to(".search-product", { width: desktop ? "70%" : "100%" });
     gsap.to(".search-product input", {
       width: "100%",
       onComplete: () => setSearchActive(true),
@@ -62,7 +89,7 @@ const Header = ({ products }) => {
   function hiddeSearchbar() {
     if (searchValue == "") {
       gsap.to(".search-product", {
-        width: "30%",
+        width: desktop ? "30%" : "100%",
         onStart: () => {
           clearTimeout(timeOut.current);
           timeOut.current = setTimeout(() => setSearchActive(false), 100);
@@ -73,43 +100,45 @@ const Header = ({ products }) => {
   }
 
   useEffect(() => {
-    function pressCtrlK(e) {
-      if (e.ctrlKey && e.key === "k") {
-        e.preventDefault();
-        showSearchBar();
-        searchBar.current.focus();
+    if (desktop) {
+      function pressCtrlK(e) {
+        if (e.ctrlKey && e.key === "k") {
+          e.preventDefault();
+          showSearchBar();
+          searchBar.current.focus();
+        }
       }
-    }
 
-    function pressEsc(e) {
-      if (e.key === "Escape" && searchActive && searchValue === "") {
-        searchBar.current.blur();
-        hiddeSearchbar();
+      function pressEsc(e) {
+        if (e.key === "Escape" && searchActive && searchValue === "") {
+          searchBar.current.blur();
+          hiddeSearchbar();
+        }
       }
-    }
 
-    window.addEventListener("keydown", pressCtrlK);
-    window.addEventListener("keyup", pressEsc);
-    return () => {
-      window.removeEventListener("keydown", pressCtrlK);
-      window.removeEventListener("keyup", pressEsc);
-    };
-  }, [searchActive]);
+      window.addEventListener("keydown", pressCtrlK);
+      window.addEventListener("keyup", pressEsc);
+      return () => {
+        window.removeEventListener("keydown", pressCtrlK);
+        window.removeEventListener("keyup", pressEsc);
+      };
+    }
+  }, [searchActive, searchValue, desktop]);
 
   useEffect(() => {
     setSearchValue("");
     setSearchActive(false);
     gsap.to(".search-product", {
-      width: "30%",
+      width: desktop ? "30%" : "100%",
       duration: 0,
     });
-  }, [pathname]);
+  }, [pathname, desktop]);
 
   const queryClient = useQueryClient();
 
-  const {mutate:searchProducts} = useMutation(
+  const { mutate: searchProducts } = useMutation(
     ["pesquisar-produto-header"],
-    async(value) => {
+    async (value) => {
       setSearchValue(value);
       if (value === "") {
         setFoundProducts([]);
@@ -119,8 +148,8 @@ const Header = ({ products }) => {
       try {
         const response = await (
           await axios.get(
-            `${import.meta.env.VITE_API_DEVELOPMENT}/produtos/pesquisar`,
-            { params: {search: value} }
+            `${import.meta.env.VITE_API_PRODUCTION}/produtos/pesquisar`,
+            { params: { search: value } }
           )
         ).data;
         setFoundProducts(response);
@@ -156,11 +185,32 @@ const Header = ({ products }) => {
       JSON.stringify(lastProducts.reverse())
     );
   }, [lastProducts]);
+  function activeSidebar() {
+    const menuLocal = !menuMobile;
+    setMenuMobile(menuLocal);
+    if (menuLocal) {
+      const tl = gsap.timeline();
+      tl.to(".sidebar-container", { display: "block", duration: 0.05 });
+      tl.fromTo(
+        ".sidebar-mobile",
+        { right: "-20%", opacity: 0 },
+        { opacity: 1, right: 0, duration: 0.15 }
+      );
+    } else {
+      const tl = gsap.timeline();
+      tl.fromTo(
+        ".sidebar-mobile",
+        { right: 0, opacity: 1 },
+        { opacity: 0, right: "-100%", duration: 0.15 }
+      );
+      tl.to(".sidebar-container", { display: "none", duration: 0.15 });
+    }
+  }
 
   return (
     <>
       <header>
-        <div className="container-width py-[4rem] flex items-center gap-[2rem]">
+        <div className="container-width py-[4rem]  flex-wrap flex items-center gap-[2rem]">
           <Link
             to={"/"}
             className="text-[3rem] font-semibold text-dark-900 dark:text-dark-100 flex gap-[.8rem] items-center"
@@ -176,11 +226,100 @@ const Header = ({ products }) => {
             </svg>
             Egames
           </Link>
-          <form onSubmit={(e)=> {
-            e.preventDefault()
-            navigateTo(`/pesquisar/${searchValue.toLowerCase()}`)
-          }}
-            className={`search-product ml-auto flex items-center justify-end w-[30%] relative`}
+          {!desktop && (
+            <>
+              <label className="flex ml-auto">
+                <input
+                  type="checkbox"
+                  checked={menuMobile}
+                  onChange={() => {
+                    activeSidebar();
+                  }}
+                  hidden
+                />
+
+                <ChartNoAxesColumnDecreasing className="text-dark-800 dark:text-dark-100 w-[3.2rem] h-[3.2rem] -rotate-[90deg]" />
+              </label>
+              <div
+                onClick={activeSidebar}
+                className="sidebar-container w-[100vw] h-[100vh] z-[30] bg-dark-900 fixed top-0 left-0 bg-opacity-30 hidden"
+              >
+                <div
+                  onClick={(e) => e.stopPropagation()}
+                  className="sidebar-mobile h-full bg-dark-900 w-[80%] absolute right-0 border-l border-dark-700 px-[4rem] py-[6rem]"
+                >
+                  <button
+                    onClick={activeSidebar}
+                    className="text-dark-50 p-[1rem] rounded-[.5rem] absolute left-[2.5rem] top-4"
+                  >
+                    <X />
+                  </button>
+                  {!signed && (
+                    <div className="flex flex-col h-full">
+                      <Link
+                        className="text-dark-100 text-[2rem] py-[1rem] font-medium"
+                        to={"/login"}
+                      >
+                        Login
+                      </Link>
+                      <Link
+                        className="text-dark-100 text-[2rem] py-[1rem] font-medium"
+                        to={"/criar-conta"}
+                      >
+                        Criar conta
+                      </Link>
+                    </div>
+                  )}
+                  {signed && (
+                    <div className="flex flex-col h-full">
+                      
+                      <Link
+                        className="text-dark-100 text-[2rem] py-[1rem] font-medium flex gap-[.8rem]"
+                        to={"/"}
+                      >
+                        <Home />
+                        Início
+                      </Link>
+                      <Link
+                        className="text-dark-100 text-[2rem] py-[1rem] font-medium flex gap-[.8rem]"
+                        to={"/conta/perfil"}
+                      >
+                        <UserRound />
+                        Conta
+                      </Link>
+                      <Link
+                        className="text-dark-100 text-[2rem] py-[1rem] font-medium flex gap-[.8rem]"
+                        to={"/conta/carrinho"}
+                      >
+                        <ShoppingCart />
+                        Carrinho
+                      </Link>
+                      <Link
+                        className="text-dark-100 text-[2rem] py-[1rem] font-medium flex gap-[.8rem]"
+                        to={"/conta/favoritos"}
+                      >
+                        <Heart />
+                        Favoritos
+                      </Link>
+                    </div>
+                  )}
+                  {/* <div className="h-[48px] relative mx-[1rem] w-[2px] bg-dark-100 dark:bg-dark-800"></div> */}
+                  <button
+                    onClick={switchTheme}
+                    className="p-[1rem] px-[1.5rem] border text-dark-800 bg-dark-100 dark:bg-dark-900 dark:text-dark-50 border-dark-100 dark:border-dark-800 rounded-md mt-auto block"
+                  >
+                    {theme === "dark" ? <MoonStar /> : <SunMedium />}
+                  </button>
+                </div>
+              </div>
+            </>
+          )}
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              navigateTo(`/pesquisar/${searchValue.toLowerCase()}`);
+            }}
+            className={`search-product lg:ml-auto flex items-center justify-end w-full max-lg:mt-[1rem] lg:w-[30%] relative`}
           >
             <Search
               className={`${
@@ -206,7 +345,7 @@ const Header = ({ products }) => {
                 {loading === false ? (
                   searchValue && (
                     <>
-                      <button className="dark:text-dark-100 text-[2rem] font-semibold">
+                      <button className="dark:text-dark-100 text-[1.4rem] lg:text-[2rem] font-semibold">
                         Buscar por: {searchValue} ({foundProducts?.length || 0}{" "}
                         resultados){" "}
                       </button>
@@ -215,7 +354,7 @@ const Header = ({ products }) => {
                         foundProducts.map((p) => (
                           <Link
                             onClick={() => {
-                              saveProductToLastProducts(p)
+                              saveProductToLastProducts(p);
                             }}
                             to={`/produto/${p._id}/${p.slug}`}
                             key={p.id}
@@ -248,9 +387,9 @@ const Header = ({ products }) => {
                     </span>
                     {lastProducts.map((p) => (
                       <Link
-                      // onClick={()=> {
-                      //   showSearchBar()
-                      // }}
+                        // onClick={()=> {
+                        //   showSearchBar()
+                        // }}
                         to={`/produto/${p._id}/${p.slug}`}
                         key={p._id}
                         className="flex mt-[1rem] gap-[1rem]"
@@ -277,89 +416,90 @@ const Header = ({ products }) => {
             {searchActive && (
               <div className="w-[100vw] h-[100vh] fixed bg-dark-900 left-0 top-0 bg-opacity-50 z-[2]"></div>
             )}
-            <span className="text-dark-500 absolute font-semibold text-[1.8rem] right-6 z-[4]">
+            <span className="text-dark-500 absolute max-lg:hidden font-semibold text-[1.8rem] right-6 z-[4]">
               {searchActive ? "Esc" : "Ctrl K"}
             </span>
           </form>
 
-          <div className="text-[2.4rem] font-semibold flex gap-[1rem] items-center">
-            {!signed && (
-              <>
-                <Link
-                  to={"/login"}
-                  className="text-dark-900 dark:text-dark-100 p-[1rem] px-[1.2rem]"
-                >
-                  Login
-                </Link>
-                <Link
-                  to={"/criar-conta"}
-                  className="bg-dark-800 text-dark-50 dark:bg-dark-100 p-[1rem] px-[1.2rem] rounded-md dark:text-dark-900 w-max"
-                >
-                  Criar conta
-                </Link>
-              </>
-            )}
-            {signed && (
-              <>
-                <button
-                  className="relative"
-                  onClick={() => setModalUser(!modalUser)}
-                >
-                  <UserRound className="stroke-dark-900 dark:stroke-dark-100" />
-                  {modalUser && (
-                    <div className="flex flex-col p-[1rem] border dark:border-dark-700 rounded-md dark:text-dark-300 text-[1.7rem] items-start absolute w-max right-0 dark:bg-dark-900 cursor-auto top-[110%] z-[4]">
-                      <Link
-                        to={"/conta/perfil"}
-                        className="p-[.8rem] dark:hover:bg-dark-800 rounded-md"
-                      >
-                        Minha conta
-                      </Link>
-                      <button
-                        onClick={logoutUser}
-                        className="p-[.8rem] dark:hover:bg-dark-800 rounded-md w-full text-start"
-                      >
-                        Sair
-                      </button>
-                    </div>
-                  )}
-                </button>
-                <Link to={"/conta/carrinho"} className="relative">
-                  <ShoppingCart className="stroke-dark-900 dark:stroke-dark-100" />
-                  <span
-                    className={`absolute text-[1.5rem] -top-5 ${
-                      cart.length < 10
-                        ? "-right-[40%] p-[.8rem]"
-                        : "-right-[50%] p-[.55rem]"
-                    } leading-none bg-dark-900  dark:bg-dark-300 text-dark-100 dark:text-dark-900 rounded-full  py-[.4rem]`}
+          {desktop && (
+            <div className="text-[2.4rem] font-semibold flex gap-[1rem] items-center">
+              {!signed && (
+                <>
+                  <Link
+                    to={"/login"}
+                    className="text-dark-900 dark:text-dark-100 p-[1rem] px-[1.2rem]"
                   >
-                    {cart.length}
-                  </span>
-                </Link>
-                <Link to={"/conta/favoritos"} className="relative">
-                  <Heart className="stroke-dark-900 dark:stroke-dark-100" />
-                  <span
-                    className={`absolute text-[1.5rem] -top-5 ${
-                      favorites.length < 10
-                        ? "-right-[40%] p-[.8rem]"
-                        : "-right-[50%] p-[.55rem]"
-                    } leading-none bg-dark-900  dark:bg-dark-300 text-dark-100 dark:text-dark-900 rounded-full py-[.4rem]`}
+                    Login
+                  </Link>
+                  <Link
+                    to={"/criar-conta"}
+                    className="bg-dark-800 text-dark-50 dark:bg-dark-100 p-[1rem] px-[1.2rem] rounded-md dark:text-dark-900 w-max"
                   >
-                    {favorites.length}
-                  </span>
-                </Link>
-              </>
-            )}
-            <div className="h-[48px] relative mx-[1rem] w-[2px] bg-dark-100 dark:bg-dark-800"></div>
-            <button
-              onClick={switchTheme}
-              className="p-[1rem] px-[1.5rem] border text-dark-800 dark:text-dark-50 border-dark-100 dark:border-dark-800 rounded-md"
-            >
-              {theme === "dark" ? <MoonStar /> : <SunMedium />}
-            </button>
-          </div>
+                    Criar conta
+                  </Link>
+                </>
+              )}
+              {signed && (
+                <>
+                  <button
+                    className="relative"
+                    onClick={() => setModalUser(!modalUser)}
+                  >
+                    <UserRound className="stroke-dark-900 dark:stroke-dark-100" />
+                    {modalUser && (
+                      <div className="flex flex-col p-[1rem] border dark:border-dark-700 rounded-md dark:text-dark-300 text-[1.7rem] items-start absolute w-max right-0 dark:bg-dark-900 cursor-auto top-[110%] z-[4]">
+                        <Link
+                          to={"/conta/perfil"}
+                          className="p-[.8rem] dark:hover:bg-dark-800 rounded-md"
+                        >
+                          Minha conta
+                        </Link>
+                        <button
+                          onClick={logoutUser}
+                          className="p-[.8rem] dark:hover:bg-dark-800 rounded-md w-full text-start"
+                        >
+                          Sair
+                        </button>
+                      </div>
+                    )}
+                  </button>
+                  <Link to={"/conta/carrinho"} className="relative">
+                    <ShoppingCart className="stroke-dark-900 dark:stroke-dark-100" />
+                    <span
+                      className={`absolute text-[1.5rem] -top-5 ${
+                        cart.length < 10
+                          ? "-right-[40%] p-[.8rem]"
+                          : "-right-[50%] p-[.55rem]"
+                      } leading-none bg-dark-900  dark:bg-dark-300 text-dark-100 dark:text-dark-900 rounded-full  py-[.4rem]`}
+                    >
+                      {cart.length}
+                    </span>
+                  </Link>
+                  <Link to={"/conta/favoritos"} className="relative">
+                    <Heart className="stroke-dark-900 dark:stroke-dark-100" />
+                    <span
+                      className={`absolute text-[1.5rem] -top-5 ${
+                        favorites.length < 10
+                          ? "-right-[40%] p-[.8rem]"
+                          : "-right-[50%] p-[.55rem]"
+                      } leading-none bg-dark-900  dark:bg-dark-300 text-dark-100 dark:text-dark-900 rounded-full py-[.4rem]`}
+                    >
+                      {favorites.length}
+                    </span>
+                  </Link>
+                </>
+              )}
+              <div className="h-[48px] relative mx-[1rem] w-[2px] bg-dark-100 dark:bg-dark-800"></div>
+              <button
+                onClick={switchTheme}
+                className="p-[1rem] px-[1.5rem] border text-dark-800 dark:text-dark-50 border-dark-100 dark:border-dark-800 rounded-md"
+              >
+                {theme === "dark" ? <MoonStar /> : <SunMedium />}
+              </button>
+            </div>
+          )}
         </div>
       </header>
-      
     </>
   );
 };
