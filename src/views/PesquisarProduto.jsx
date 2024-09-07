@@ -2,6 +2,8 @@ import GridSection from "@components/ui/GridSection";
 import Input from "@components/ui/Input";
 import axios from "axios";
 import { Check } from "lucide-react";
+import { X } from "lucide-react";
+import { ListFilter } from "lucide-react";
 import { Dot } from "lucide-react";
 import { useMemo } from "react";
 import { useState } from "react";
@@ -12,12 +14,13 @@ const PesquisarProduto = () => {
   const [initialPrice, setInicialPrice] = useState("R$ ");
   const [finalPrice, setFinalPrice] = useState("R$ ");
   const [categories, setCategories] = useState([]);
-  const [produtosFiltrados, setProdutosFiltrados] = useState([]);
+  const [produtosFiltrados, setProdutosFiltrados] = useState(null);
+  const [filtros, setFiltros] = useState(true)
   const { data: produtos, isFetching } = useQuery(
     ["produtos-pesquisa", search],
     async () => {
       const response = await axios.get(
-        `${import.meta.env.VITE_API_DEVELOPMENT}/produtos/pesquisar`,
+        `${import.meta.env.VITE_API_PRODUCTION}/produtos/pesquisar`,
         {
           params: { search },
         }
@@ -36,12 +39,12 @@ const PesquisarProduto = () => {
     }
   }, [produtos, isFetching]);
 
-  function changeInitialPrice(e) {
-    const valor = e.target.value.replace(/\D/g, "");
+  function changeInitialPrice(value) {
+    const valor = value.replace(/\D/g, "");
     setInicialPrice(`R$ ${valor}`);
   }
-  function changeFinalPrice(e) {
-    const valor = e.target.value.replace(/\D/g, "");
+  function changeFinalPrice(value) {
+    const valor = value.replace(/\D/g, "");
     setFinalPrice(`R$ ${valor}`);
   }
 
@@ -82,15 +85,25 @@ const PesquisarProduto = () => {
 
       return precoFiltrado && categoriaFiltrada;
     });
-
     setProdutosFiltrados(filtered);
   }
+  
 
   if (!isFetching)
     return (
       <section>
         <div className="container-width flex gap-[2rem]">
-          <div className="p-[1.6rem] bg-dark-100 dark:bg-dark-900 min-w-[20%] border dark:border-dark-700 rounded-[.5rem] w-[10%] mb-auto">
+          <div
+            className={`p-[1.6rem] bg-dark-50 dark:bg-dark-900 min-w-[20%] border dark:border-dark-700 rounded-[.5rem] w-[10%] mb-auto max-lg:fixed max-lg:w-[85%] z-[5] ease-in-out duration-300 transition-all ${
+              filtros ? "max-lg:top-2/4 max-lg:-translate-y-2/4 max-lg:w-full" : "max-lg:-right-[85%]"
+            }`}
+          >
+            <button onClick={()=> setFiltros(false)} className="lg:hidden absolute right-4 top-4 p-[.5rem] rounded-[.5rem] dark:text-dark-500">
+              <X />
+            </button>
+            {filtros && (
+              <div className="lg:hidden w-[200vw] h-[200vh] bg-dark-900 bg-opacity-50 absolute -left-full -top-full z-[-2]"></div>
+            )}
             <span className="text-[2.4rem] dark:text-dark-100 font-semibold">
               Preço
             </span>
@@ -103,7 +116,7 @@ const PesquisarProduto = () => {
               <Input
                 label={"Até"}
                 value={finalPrice}
-                setValue={changeFinalPrice}
+                setValue={(value)=> changeFinalPrice(value)}
               />
             </div>
             <span className="text-[2.4rem] dark:text-dark-100 font-semibold mt-[2rem] mb-[1.2rem] block">
@@ -118,7 +131,7 @@ const PesquisarProduto = () => {
                 >
                   {/* <input type="checkbox" name="" id="" /> */}
                   <div
-                    className={`w-8 h-8 border dark:border-dark-700 rounded-[.5rem] flex items-center justify-center transition-all ease-in-out duration-100 ${
+                    className={`w-8 h-8 border-dark-400 border dark:border-dark-700 rounded-[.5rem] flex items-center justify-center transition-all ease-in-out duration-100 ${
                       categories.includes(c.toLowerCase())
                         ? "bg-dark-100 text-dark-900"
                         : ""
@@ -139,19 +152,21 @@ const PesquisarProduto = () => {
             </div>
             <button
               onClick={applyFilters}
-              className="p-[1rem] mt-[2rem] dark:bg-dark-100 block text-[1.4rem] font-medium rounded-[.5rem]"
+              className="p-[1rem] mt-[2rem] bg-dark-900 text-dark-100 dark:text-dark-900 dark:bg-dark-100 block text-[1.4rem] font-medium rounded-[.5rem]"
             >
               Aplicar filtros
             </button>
           </div>
           <div>
+            <button onClick={()=> setFiltros(true)} className="lg:hidden p-[1rem] dark:text-dark-900 dark:bg-dark-50 bg-dark-900 text-dark-50 rounded-[.5rem] text-[1.6rem] font-medium flex items-center gap-[.6rem] mb-[1.2rem]">
+              Filtros
+              <ListFilter className="w-[2rem] h-[2rem]"/>
+            </button>
             <h1 className="dark:text-dark-50 text-[3rem] font-semibold mb-[2rem]">
               Mostrando resultados para {`"${search}"`}
             </h1>
             <GridSection
-              produtos={
-                produtosFiltrados.length > 0 ? produtosFiltrados : produtos
-              }
+              produtos={produtosFiltrados ? produtosFiltrados : produtos}
             />
           </div>
         </div>
