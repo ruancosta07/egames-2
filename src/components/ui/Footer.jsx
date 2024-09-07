@@ -8,7 +8,7 @@ import { Palette } from "lucide-react";
 const Footer = () => {
   return (
     <footer className="mt-[12rem] bg-dark-900">
-      <div className="container-width grid grid-cols-4 items-top py-[3rem]">
+      <div className="container-width grid max-lg:gap-[2rem] lg:grid-cols-4 items-top py-[3rem]">
         <Link
           to={"/"}
           className="text-[3rem] font-semibold text-dark-100 flex gap-[.8rem] items-center h-fit"
@@ -25,35 +25,60 @@ const Footer = () => {
           Egames
         </Link>
         <div className="">
-          <span className="text-dark-100 text-[3rem] font-semibold">
+          <span className="text-dark-100 text-[3rem] font-semibold mb-[.8rem] block">
             Departamentos
           </span>
-          <ul className="text-dark-200 text-[2rem] bricolage">
+          <ul className="text-dark-200 text-[2rem] bricolage flex flex-col gap-[.4rem]">
             <li>Ofertas do dia</li>
             <li>Jogos</li>
             <li>Mais procurados</li>
           </ul>
         </div>
         <div className="">
-          <span className="text-dark-100 text-[3rem] font-semibold">Conta</span>
-          <ul className="text-dark-200 text-[2rem] bricolage">
-            <li>Minha conta</li>
-            <li>Login</li>
-            <li>Criar conta</li>
-            <li>Esqueci minha senha</li>
+          <span className="text-dark-100 text-[3rem] font-semibold mb-[.8rem] block">
+            Conta
+          </span>
+          <ul className="text-dark-200 text-[2rem] bricolage flex flex-col gap-[.4rem]">
+            <Link to={"/conta-perfil"}>Minha conta</Link>
+            <Link to={"/login"}>Login</Link>
+            <Link to={"/criar-conta"}>Criar conta</Link>
+            <Link to={"/esqueceu-a-senha"}>Esqueci minha senha</Link>
           </ul>
         </div>
         <div className="">
-          <span className="text-dark-100 text-[3rem] font-semibold">
+          <span className="text-dark-100 text-[3rem] font-semibold mb-[.4rem] block">
             Links úteis
           </span>
           <div className="text-dark-100 flex gap-[1rem]">
-            <Github strokeWidth={1.5} className="w-[3.2rem] h-[3.2rem]" />
-            <Linkedin strokeWidth={1.5} className="w-[3.2rem] h-[3.2rem]" />
-            <Palette strokeWidth={1.5} className="w-[3.2rem] h-[3.2rem]" />
+            <a
+              href="https://github.com/ruancosta07"
+              target="_blank"
+              title="Meu github"
+            >
+              <Github strokeWidth={1.5} className="w-[3.2rem] h-[3.2rem]" />
+            </a>
+            <a
+              href="https://www.linkedin.com/in/ruan-costa-644378248/"
+              target="_blank"
+              title="Meu linkedin"
+            >
+              <Linkedin strokeWidth={1.5} className="w-[3.2rem] h-[3.2rem]" />
+            </a>
+            <a
+              href="https://ruancostadev.com.br/"
+              target="_blank"
+              title="Meu portfólio"
+            >
+              <Palette strokeWidth={1.5} className="w-[3.2rem] h-[3.2rem]" />
+            </a>
           </div>
         </div>
-        <p className="col-span-full text-dark-200 text-[1.6rem] mt-[2rem]">Criado e desenvolvido por <a href="" className="text-dark-50">Ruan Costa</a></p>
+        <p className="col-span-full text-dark-200 text-[1.6rem] mt-[2rem]">
+          Criado e desenvolvido por{" "}
+          <a href="" className="text-dark-50">
+            Ruan Costa
+          </a>
+        </p>
       </div>
     </footer>
   );
