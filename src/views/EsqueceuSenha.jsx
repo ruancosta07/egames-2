@@ -103,7 +103,7 @@ const EsqueceuSenha = () => {
       try {
         const response = (
           await axios.post(
-            `${import.meta.env.VITE_API_DEVELOPMENT}/login/confirmar-email`,
+            `${import.meta.env.VITE_API_PRODUCTION}/login/confirmar-email`,
             {email:user.email}
           )
         ).data;
@@ -120,7 +120,6 @@ const EsqueceuSenha = () => {
     e.preventDefault()
     try{
       const response = await axios.post("http://localhost:3000/login/confirmar-codigo", {code: codigoRecuperacao.join(""), email: user.email})
-      console.log(response.data)
       setCodigoConfirmado(true)
     }
     catch(err){
@@ -134,7 +133,6 @@ const EsqueceuSenha = () => {
       setLoading(true)
       try{
         const response = await axios.patch("http://localhost:3000/conta/recuperar-senha", {password: novaSenha, code: codigoRecuperacao.join(""), email: user.email})
-        console.log(response)
         setMessage({type: "success", title: "Senha alterada com sucesso", text: "Você será redirecionado para a página de login..."})
       }
       catch(err){
