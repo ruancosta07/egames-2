@@ -12,7 +12,7 @@ import { useRef } from "react";
 import Cookies from "js-cookie";
 import { Navigate } from "react-router-dom";
 const Login = () => {
-  const { setUserActive, setCart, setSigned, setFavorites, loadingData, signed } = useUserStore();
+  const { setUserActive, setCart, setSigned, setFavorites, setPreferences, loadingData, signed } = useUserStore();
   const [rememberMe, setRememberMe] = useState(false);
   const [seePassword, setSeePassword] = useState(false);
   const [user, setUser] = useState({
@@ -40,7 +40,7 @@ const Login = () => {
       try {
         const response = (
           await axios.post(
-            `${import.meta.env.VITE_API_DEVELOPMENT}/login`,
+            `${import.meta.env.VITE_API_PRODUCTION}/login`,
             user
           )
         ).data;
@@ -53,6 +53,7 @@ const Login = () => {
         });
         setCart(response.cart);
         setFavorites(response.favorites);
+        setPreferences(response.preferences)
         Cookies.set("auth_token_user", response.token, {
           expires: rememberMe ? 100 : null,
         });
@@ -75,12 +76,12 @@ const Login = () => {
   return (
     <section className="">
       <div
-        className="container-width grid min-h-[100vh] items-center gap-[6rem]"
-        style={{ gridTemplateColumns: "1fr .9fr" }}
+        className="container-width grid lg:grid-cols-[1fr_.9fr] min-h-[100vh] items-center gap-[6rem]"
+        // style={{ gridTemplateColumns: "1fr .9fr" }}
       >
         <img
           src="/images/bg-1.jpg"
-          className="h-[90%] object-cover rounded-[2rem]"
+          className="h-[90%] object-cover rounded-[2rem] max-lg:hidden"
           alt=""
         />
         <form className="" onSubmit={(e) => login(e)}>
@@ -173,7 +174,7 @@ const Login = () => {
               </button>
             </div>
           </div>
-          <div className="flex justify-between items-center mt-[2rem]">
+          <div className="flex max-lg:flex-col max-lg:gap-[2rem] justify-between lg:items-center mt-[1rem] lg:mt-[2rem]">
             <button
               type="button"
               onClick={() => setRememberMe(!rememberMe)}
