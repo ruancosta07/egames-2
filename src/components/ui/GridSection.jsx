@@ -11,7 +11,6 @@ import {Heart, CircleX, CheckCircle, ShoppingCart} from "lucide-react"
 const GridSection = ({ produtos }) => {
     const { setCart, setFavorites, favorites, signed } = useUserStore();
     const [message, setMessage] = useState(null);
-    const [favProduct, setFavProduct] = useState()
     const timeOut = useRef();
     const navigateTo = useNavigate()
     async function addProductCart(id) {
@@ -19,7 +18,7 @@ const GridSection = ({ produtos }) => {
   
         const response = (
           await axios.post(
-            `${import.meta.env.VITE_API_DEVELOPMENT}/conta/carrinho/adicionar`,
+            `${import.meta.env.VITE_API_PRODUCTION}/conta/carrinho/adicionar`,
             {id},
             {
               headers: {
@@ -44,7 +43,7 @@ const GridSection = ({ produtos }) => {
       try {
         const response = (
           await axios.post(
-            `${import.meta.env.VITE_API_DEVELOPMENT}/conta/favoritos/adicionar`,
+            `${import.meta.env.VITE_API_PRODUCTION}/conta/favoritos/adicionar`,
             {id},
             {
               headers: {
@@ -66,7 +65,7 @@ const GridSection = ({ produtos }) => {
           const response = (
             await axios.delete(
               `${
-                import.meta.env.VITE_API_DEVELOPMENT
+                import.meta.env.VITE_API_PRODUCTION
               }/conta/favoritos/remover/${id}`,
               { headers: { Authorization: `Bearer ${token}` } }
             )
@@ -78,7 +77,7 @@ const GridSection = ({ produtos }) => {
       }
     }
   return (
-    <div className="grid grid-cols-4 gap-[2rem] my-[1rem]">
+    <div className="grid lg:grid-cols-4 gap-[2rem] my-[1rem]">
       {produtos.map((p) => (
         <Link
           to={`/produto/${p._id}/${p.slug}`}
@@ -91,12 +90,11 @@ const GridSection = ({ produtos }) => {
                 navigateTo("/login");
               }
               e.preventDefault();
-              setFavProduct(!favProduct);
-              favProduct ? removeProductFavorites() : addProductFavorites();
+              favorites.find(f=> f._id == p._id) ? removeProductFavorites(p._id) : addProductFavorites(p._id);
             }}
             className="absolute p-[1.2rem] rounded-full bg-dark-200 dark:bg-dark-800 -right-5 -top-5 z-[4]"
           >
-            {favProduct ? (
+            {favorites.find(f=> f._id == p._id) ? (
               <Heart
                 className="text-rose-500 fill-rose-500"
                 width={28}
