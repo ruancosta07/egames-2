@@ -123,7 +123,7 @@ const Compras = () => {
         ))}
       </div>
       {avaliarProduto && (
-        <Modal modal={avaliarProduto} setModal={setAvaliarProduto}>
+        <Modal modal={avaliarProduto} setModal={setAvaliarProduto} className={"min-h-[60%]"}>
           <h1 className="max-lg:max-w-[20ch] leading-[1.215] dark:text-dark-50 text-[2.4rem] font-semibold mb-[2rem]">
             O que você achou do produto?
           </h1>
