@@ -148,7 +148,7 @@ const Favoritos = () => {
                     })}
                   </div>
                   {showResumo && (
-                    <div className="resumo max-lg:fixed max-lg:bottom-0 lg:sticky lg:top-8 h-fit bg-dark-900 left-0 w-full p-[2rem] py-[3rem]">
+                    <div className="resumo max-lg:fixed max-lg:bottom-0 lg:sticky lg:top-8 h-fit  left-0 w-full p-[2rem] py-[3rem]">
                       <h3 className="dark:text-dark-100 text-[2rem] lg:text-[3rem] font-semibold mb-[.8rem]">
                         Resumo do pedido
                       </h3>
@@ -203,7 +203,7 @@ const Favoritos = () => {
                 </p>
                 <Link
                   to={"/"}
-                  className="mx-auto block dark:bg-dark-100 dark:text-dark-900 w-fit mt-[2rem] p-[1rem] font-semibold  text-[1.6rem] lg:text-[2rem] rounded-md"
+                  className="mx-auto block bg-zinc-900 text-zinc-100 dark:bg-dark-100 dark:text-dark-900 w-fit mt-[2rem] p-[1rem] font-semibold  text-[1.6rem] lg:text-[2rem] rounded-md"
                   data-animate="favoritos"
                 >
                   Adicionar itens aos favoritos

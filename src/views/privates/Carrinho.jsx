@@ -148,8 +148,8 @@ const Carrinho = () => {
     if (cart.length == 0) {
       gsap.fromTo(
         "[data-animate='carrinho']",
-        { opacity: 0, y: 32 },
-        { y: 0, opacity: 1, stagger: 0.15, duration: 0.6, }
+        { opacity: 0, y: -32 },
+        { y: 0, opacity: 1, stagger: 0.15, }
       );
     }
   }, [cart]);
@@ -292,7 +292,7 @@ const Carrinho = () => {
                 </p>
                 <Link
                   to={"/"}
-                  className="mx-auto block dark:bg-dark-100 dark:text-dark-900 w-fit mt-[2rem] p-[1rem] font-semibold  text-[1.5rem] lg:text-[2rem] rounded-md"
+                  className="mx-auto block bg-zinc-900 text-zinc-100 dark:bg-dark-100 dark:text-dark-900 w-fit mt-[2rem] p-[1rem] font-semibold  text-[1.5rem] lg:text-[2rem] rounded-md"
                   data-animate="carrinho"
                 >
                   Adicionar itens no carrinho
