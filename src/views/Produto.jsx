@@ -261,7 +261,7 @@ const Produto = () => {
                     }
                     e.preventDefault();
                     setFavProduct(!favProduct);
-                    favProduct
+                    favorites.find((fav)=> fav._id === produto._id)
                       ? removeProductFavorites(produto._id)
                       : addProductFavorites(produto._id);
                   }}
