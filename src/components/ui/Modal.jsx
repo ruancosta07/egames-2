@@ -3,8 +3,9 @@ import { X } from "lucide-react";
 import React from "react";
 import { useRef } from "react";
 import { useEffect } from "react";
+import { twMerge } from "tailwind-merge";
 
-const Modal = ({ type, action, modal, setModal, children, onCloseModal }) => {
+const Modal = ({ type, action, modal, setModal, children, onCloseModal, className }) => {
   const modalDiv = useRef();
   useEffect(() => {
     gsap.fromTo(
@@ -57,7 +58,7 @@ const Modal = ({ type, action, modal, setModal, children, onCloseModal }) => {
           ref={modalDiv}
           onClick={(e) => e.stopPropagation()}
           onSelect={(e)=> e.stopPropagation()}
-          className="modal min-w-[30%] max-h-[30%] p-[2rem] dark:bg-dark-900 rounded-[.5rem] border dark:border-dark-700 relative"
+          className={twMerge("modal min-w-[30%] max-h-[40%] overflow-y-scroll p-[2rem] dark:bg-dark-900 rounded-[.5rem] border dark:border-dark-700 relative", className)}
         >
           <button
             onClick={(e) => closeModal(e)}
