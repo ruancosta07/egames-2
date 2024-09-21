@@ -309,6 +309,13 @@ const Header = ({ products }) => {
                         <UserRound />
                         Conta
                       </Link>
+                      {userActive.role === "admin" &&                       <Link
+                        className="text-dark-100 text-[2rem] py-[1rem] font-medium flex gap-[.8rem]"
+                        to={"/admin/dashboard"}
+                      >
+                        <LayoutDashboard />
+                        Dashboard
+                      </Link>}
                       <Link
                         className="text-dark-100 text-[2rem] py-[1rem] font-medium flex gap-[.8rem]"
                         to={"/conta/carrinho"}
@@ -409,9 +416,6 @@ const Header = ({ products }) => {
                     </span>
                     {lastProducts.map((p) => (
                       <Link
-                        // onClick={()=> {
-                        //   showSearchBar()
-                        // }}
                         to={`/produto/${p._id}/${p.slug}`}
                         key={p._id}
                         className="flex mt-[1rem] gap-[1rem]"
@@ -491,50 +495,63 @@ const Header = ({ products }) => {
                     className="relative"
                     onClick={() => setModalUser(!modalUser)}
                   >
-                    <div className="w-[35px] h-[35px] bg-gradient-to-tr from-orange-500 to-fuchsia-900 rounded-full border border-zinc-300 dark:border-zinc-800">
-
-                    </div>
+                    <div className="w-[35px] h-[35px] bg-gradient-to-tr from-orange-500 to-fuchsia-900 rounded-full border border-zinc-300 dark:border-zinc-800"></div>
                     {modalUser && (
-                      <div className="opacity modal-user bg-dark-50 flex flex-col border dark:border-dark-800 rounded-md dark:text-dark-100 items-start absolute w-max right-0 dark:bg-zinc-900 cursor-auto top-[110%] z-[4] inter gap-[.5rem] rounded-lg">
-                       <div className="flex flex-col border-b pb-[.6rem] dark:border-zinc-800 p-[1rem]">
-                       <span className="text-[1.4rem] mb-[.4rem] text-start">{userActive.name}</span>
-                        <p className="text-[1.2rem] font-normal dark:text-dark-300">{userActive.email}</p>
-                       </div>
-                        <div className="flex flex-col w-full p-[.5rem] border-b dark:border-zinc-800">
-                        <Link
-                          to={"/conta/perfil"}
-                          className="text-[1.3rem] hover:bg-zinc-200 hover:dark:bg-dark-800 dark:text-dark-300 duration-200 ease-in-out font-normal w-full text-start flex items-center gap-[.6rem] p-[.8rem] rounded-lg cursor-default"
-                        >
-                          <UserRound className="w-[1.6rem] h-[1.6rem]"/>
-                          Minha conta
-                        </Link>
-                        <Link
-                          to={"/admin/dashboard"}
-                          className="text-[1.3rem] hover:bg-zinc-200 hover:dark:bg-dark-800 dark:text-dark-300 duration-200 ease-in-out font-normal w-full text-start flex items-center gap-[.6rem] p-[.8rem] rounded-lg cursor-default"
-                        >
-                          <LayoutDashboard className="w-[1.6rem] h-[1.6rem]"/>
-                          Dashboard
-                        </Link>
-                        <button
-                          onClick={logoutUser}
-                          className="text-[1.3rem] hover:bg-zinc-200 hover:dark:bg-dark-800 dark:text-dark-300 duration-200 ease-in-out font-normal w-full text-start flex items-center gap-[.6rem] p-[.8rem] rounded-lg cursor-default"
-                        >
-                          <LogOutIcon className="w-[1.6rem] h-[1.6rem]"/>
-                          Sair
-                        </button>
-
+                      <div className="opacity modal-user bg-dark-50 flex flex-col border dark:border-dark-800 dark:text-dark-100 items-start absolute w-max right-0 dark:bg-zinc-900 cursor-auto top-[110%] z-[4] inter gap-[.5rem] rounded-lg">
+                        <div className="flex flex-col border-b pb-[.6rem] dark:border-zinc-800 p-[1rem]">
+                          <span className="text-[1.5rem] mb-[.4rem] text-start">
+                            {userActive.name}
+                          </span>
+                          <p className="text-[1.3rem] font-normal dark:text-dark-300">
+                            {userActive.email}
+                          </p>
                         </div>
-                        <div onClick={(e)=> e.stopPropagation()} className="flex w-full justify-between cursor-pointer p-[.8rem] px-[1.3rem]">
-                        <button
-                          className="text-[1.3rem] hover:dark:text-dark-100 dark:text-dark-300 py-[.4rem]  duration-200 ease-in-out font-normal w-full text-start"
-                        >
-                          Tema
-                        </button>
-                        <div onClick={()=> switchTheme(theme === "dark" ? "light": "dark")} className={`theme-container w-[56px] rounded-full border dark:border-zinc-800 p-[.3rem] flex duration-200`}>
-                          <button  className={`  flex bg-zinc-300 dark:bg-zinc-800 rounded-full  justify-end `}>
-                            {theme === "dark" ? <MoonStar className="w-[1.8rem] h-[1.8rem]"/> : <SunDim className="w-[1.8rem] h-[1.8rem]"/>  }
+                        <div className="flex flex-col w-full p-[.5rem] border-b dark:border-zinc-800">
+                          <Link
+                            to={"/conta/perfil"}
+                            className="text-[1.5rem] hover:bg-zinc-200 hover:dark:bg-dark-800 dark:text-dark-300 duration-200 ease-in-out font-normal w-full text-start flex items-center gap-[.6rem] p-[.8rem] rounded-lg cursor-default"
+                          >
+                            <UserRound className="w-[1.6rem] h-[1.6rem]" />
+                            Minha conta
+                          </Link>
+                          {userActive.role === "admin" && <Link
+                            to={"/admin/dashboard"}
+                            className="text-[1.5rem] hover:bg-zinc-200 hover:dark:bg-dark-800 dark:text-dark-300 duration-200 ease-in-out font-normal w-full text-start flex items-center gap-[.6rem] p-[.8rem] rounded-lg cursor-default"
+                          >
+                            <LayoutDashboard className="w-[1.6rem] h-[1.6rem]" />
+                            Dashboard
+                          </Link>}
+                          <button
+                            onClick={logoutUser}
+                            className="text-[1.5rem] hover:bg-zinc-200 hover:dark:bg-dark-800 dark:text-dark-300 duration-200 ease-in-out font-normal w-full text-start flex items-center gap-[.6rem] p-[.8rem] rounded-lg cursor-default"
+                          >
+                            <LogOutIcon className="w-[1.6rem] h-[1.6rem]" />
+                            Sair
                           </button>
                         </div>
+                        <div
+                          onClick={(e) => e.stopPropagation()}
+                          className="flex w-full justify-between cursor-pointer p-[.8rem] px-[1.3rem]"
+                        >
+                          <button className="text-[1.5rem] hover:dark:text-dark-100 dark:text-dark-300 py-[.4rem]  duration-200 ease-in-out font-normal w-full text-start">
+                            Tema
+                          </button>
+                          <div
+                            onClick={() =>
+                              switchTheme(theme === "dark" ? "light" : "dark")
+                            }
+                            className={`theme-container w-[64px] rounded-full border dark:border-zinc-800 p-[.3rem] flex duration-200`}
+                          >
+                            <button
+                              className={`  flex bg-zinc-300 dark:bg-zinc-800 rounded-full  justify-end `}
+                            >
+                              {theme === "dark" ? (
+                                <MoonStar className="w-[1.8rem] h-[1.8rem]" />
+                              ) : (
+                                <SunDim className="w-[1.8rem] h-[1.8rem]" />
+                              )}
+                            </button>
+                          </div>
                         </div>
                       </div>
                     )}
