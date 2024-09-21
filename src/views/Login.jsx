@@ -80,7 +80,7 @@ const Login = () => {
         // style={{ gridTemplateColumns: "1fr .9fr" }}
       >
         <img
-          src="/images/bg-1.jpg"
+          src="/images/bg-1.webp"
           className="h-[90%] object-cover rounded-[2rem] max-lg:hidden"
           alt=""
         />

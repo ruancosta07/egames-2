@@ -222,7 +222,7 @@ const CriarConta = () => {
             </div>
           </form>
           <img
-            src="/images/bg-2.jpg"
+            src="/images/bg-2.webp"
             className="h-[90%] max-lg:hidden object-cover rounded-[2rem]"
             alt=""
           />
