@@ -119,7 +119,7 @@ const EsqueceuSenha = () => {
   async function confirmarCodigo(e){
     e.preventDefault()
     try{
-      const response = await axios.post("http://localhost:3000/login/confirmar-codigo", {code: codigoRecuperacao.join(""), email: user.email})
+      const response = await axios.post("https://api-egames.vercel.app/login/confirmar-codigo", {code: codigoRecuperacao.join(""), email: user.email})
       setCodigoConfirmado(true)
     }
     catch(err){
@@ -132,7 +132,7 @@ const EsqueceuSenha = () => {
     if(novaSenha === confirmarNovaSenha && codigoConfirmado && codigoRecuperacao.every(i=> i!== "")){
       setLoading(true)
       try{
-        const response = await axios.patch("http://localhost:3000/conta/recuperar-senha", {password: novaSenha, code: codigoRecuperacao.join(""), email: user.email})
+        const response = await axios.patch("https://api-egames.vercel.app/conta/recuperar-senha", {password: novaSenha, code: codigoRecuperacao.join(""), email: user.email})
         setMessage({type: "success", title: "Senha alterada com sucesso", text: "Você será redirecionado para a página de login..."})
       }
       catch(err){
