@@ -10,17 +10,21 @@ import Favoritos from "./views/privates/Favoritos"
 import Checkout from "./views/privates/Checkout";
 import Compras from "./views/privates/Compras";
 import Seguranca from "./views/privates/Seguranca";
+import DashboardContainer from "@components/ui/DashboardContainer";
+import Produtos from "./views/privates/Produtos";
+import Dashboard from "./views/privates/Dashboard";
 
 const PrivateRoutes = () => {
-  const { loadingData, signed } = useUserStore();
+  const { loadingData, signed, userActive } = useUserStore();
   if (loadingData) return null;
   if (loadingData === false && !signed) return <Navigate to={"/login"} />;
+  if(loadingData === false && signed) 
   return (
     <>
       <Header />
       <Routes>
         <Route
-          path="/perfil"
+          path="/conta/perfil"
           element={
             <Container>
               <Perfil />
@@ -28,7 +32,7 @@ const PrivateRoutes = () => {
           }
         />
         <Route
-          path="/compras"
+          path="/conta/compras"
           element={
             <Container>
               <Compras />
@@ -36,16 +40,32 @@ const PrivateRoutes = () => {
           }
         />
         <Route
-          path="/seguranca"
+          path="/conta/seguranca"
           element={
             <Container>
               <Seguranca />
             </Container>
           }
         />
-        <Route path="/carrinho" element={<Carrinho />} />
-        <Route path="/favoritos" element={<Favoritos />} />
-        <Route path="/checkout" element={<Checkout />} />
+          <Route
+            path="/admin/dashboard"
+            element={
+              <DashboardContainer>
+                <Dashboard />
+              </DashboardContainer>
+            }
+          />
+          <Route
+            path="/admin/produtos"
+            element={
+              <DashboardContainer>
+                <Produtos />
+              </DashboardContainer>
+            }
+          />
+        <Route path="/conta/carrinho" element={<Carrinho />} />
+        <Route path="/conta/favoritos" element={<Favoritos />} />
+        <Route path="/conta/checkout" element={<Checkout />} />
       </Routes>
     </>
   );
