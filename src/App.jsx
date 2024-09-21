@@ -66,15 +66,25 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/criar-conta" element={<CriarConta />} />
           <Route path="/esqueceu-a-senha" element={<EsqueceuSenha />} />
-          <Route path="/produto/:id/:slug" element={<>
-          <Header/>
-            <Produto />
-          </>} />
-          <Route path="/pesquisar/:search" element={<>
-          <Header/>
-            <PesquisarProduto />
-          </>} />
-          <Route path="/conta/*" element={<PrivateRoutes/>} />
+          <Route
+            path="/produto/:id/:slug"
+            element={
+              <>
+                <Header />
+                <Produto />
+              </>
+            }
+          />
+          <Route
+            path="/pesquisar/:search"
+            element={
+              <>
+                <Header />
+                <PesquisarProduto />
+              </>
+            }
+          />
+          <Route path="/*" element={<PrivateRoutes />} />
         </Routes>
       </BrowserRouter>
     </>
