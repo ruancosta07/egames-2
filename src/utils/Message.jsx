@@ -30,7 +30,7 @@ const Message = ({ setMessage, title, text, type }) => {
     );
   }, [setMessage]);
   return (
-    <div className="message fixed left-[4rem] bottom-[4rem] border dark:bg-dark-900 dark:border-zinc-800 p-[1rem] rounded-md flex items-start gap-[.8rem] shadow-md">
+    <div className="message fixed left-[4rem] bottom-[4rem] border dark:bg-dark-900 dark:border-zinc-800 p-[1rem] rounded-md flex items-start gap-[.8rem] shadow-md z-[10]">
       {type === "success" ? (
         <CircleCheck className="text-green-700 w-[2rem] h-[2rem]" />
       ) : (
