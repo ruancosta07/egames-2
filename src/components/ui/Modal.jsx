@@ -31,7 +31,7 @@ const Modal = ({ type, action, modal, setModal, children, onCloseModal, classNam
 
   return (
     <div
-      onClick={(e) => closeModal()}
+      // onClick={(e) => closeModal()}
       className=" w-[100vw] h-[100vh] fixed left-0 top-0 flex items-center justify-center bg-dark-900 bg-opacity-30 z-[8]"
     >
       {type === "form" ? (
@@ -42,7 +42,9 @@ const Modal = ({ type, action, modal, setModal, children, onCloseModal, classNam
           }}
           ref={modalDiv}
           onClick={(e) => e.stopPropagation()}
-          className="modal min-w-[30%] max-w-[40%] min-h-[10%] max-h-[60%] overflow-y-scroll p-[2rem] dark:bg-dark-900 rounded-[.5rem] border dark:border-dark-700 relative"
+          className={twMerge(
+            "modal min-w-[30%] max-w-[40%] min-h-[10%] max-h-[60%] overflow-y-scroll p-[2rem] dark:bg-dark-900 rounded-[.5rem] border dark:border-dark-700 relative"
+          , className)}
         >
           <button
             type="button"
@@ -57,8 +59,11 @@ const Modal = ({ type, action, modal, setModal, children, onCloseModal, classNam
         <div
           ref={modalDiv}
           onClick={(e) => e.stopPropagation()}
-          onSelect={(e)=> e.stopPropagation()}
-          className={twMerge("modal min-w-[30%] max-h-[40%] overflow-y-scroll p-[2rem] dark:bg-dark-900 rounded-[.5rem] border dark:border-dark-700 relative", className)}
+          onSelect={(e) => e.stopPropagation()}
+          className={twMerge(
+            "modal min-w-[30%] max-h-[40%] overflow-y-scroll p-[2rem] dark:bg-dark-900 rounded-[.5rem] border dark:border-dark-700 relative",
+            className
+          )}
         >
           <button
             onClick={(e) => closeModal(e)}

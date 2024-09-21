@@ -1,8 +1,8 @@
 import { Eye } from "lucide-react";
 import { EyeOff } from "lucide-react";
 import { useState } from "react";
-
-const Input = ({ label, value, setValue, id, type, children, className = '', inputClassNames = '', setCustomizedValue, ...props }) => {
+import { twMerge } from "tailwind-merge";
+const Input = ({ label, value, setValue, id, type, children, className = '', inputClassNames, setCustomizedValue, ...props }) => {
   const baseClasses = "p-[1rem] text-[1.8rem] outline-none rounded-md bg-dark-300 bg-opacity-30 dark:bg-dark-800 dark:bg-opacity-80 dark:text-dark-200 ease-in-out duration-300 focus:dark:border-dark-500 hover:dark:border-dark-500 focus:border-dark-300 hover:border-dark-300 border border-transparent";
   const [seePassword, setSeePassword] = useState(false)
   if (type !== "password") {
@@ -21,14 +21,12 @@ const Input = ({ label, value, setValue, id, type, children, className = '', inp
           onChange={(e) => {
             const newValue = e.target.value;
             if (setCustomizedValue) {
-              setCustomizedValue(newValue); // Executa a função personalizada com o novo valor
-              // Aqui você pode realizar ações específicas que dependem do valor
-              // Essas ações podem ser definidas quando o componente for utilizado
+              setCustomizedValue(newValue);
             } else {
               setValue(newValue);
             }
           }}
-          className={`${baseClasses} ${inputClassNames}`}
+          className={twMerge(baseClasses, inputClassNames)}
           {...props}
         />
         {children}
